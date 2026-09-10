@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
     <style>
         :root { --gold: #c5a028; --navy: #050b1a; --glass: #ffffff; }
         body { margin: 0; background: radial-gradient(circle, #0f172a 0%, #050b1a 100%); font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; color: #fff; min-height: 100vh; }
@@ -89,8 +90,22 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    const auth = firebase.auth();
     const MASTER_PASS = "fran88";
     let todosDados = [];
+
+    // Faz o painel "entrar" sozinho no Firebase, sem pedir nada pro usuário
+    auth.signInAnonymously().catch((error) => {
+        console.error("Erro ao conectar com a nuvem:", error);
+        alert("Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.");
+    });
+
+    // Só carrega o histórico depois que a conexão for confirmada
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            carregarHistorico();
+        }
+    });
 
     function salvarCloud() {
         const valData = document.getElementById('data').value;
@@ -187,7 +202,6 @@
     }
 
     document.getElementById('data').valueAsDate = new Date();
-    carregarHistorico();
 </script>
 
 </body>
