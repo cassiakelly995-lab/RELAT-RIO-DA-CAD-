@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Central de Atendimento · OAB Santana de Parnaíba</title>
+<link rel="icon" href="logo-oab.png">
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
@@ -33,17 +34,11 @@
 
   /* ===== Barra lateral ===== */
   .side{background:var(--azul);color:#fff;padding:24px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-  .marca{display:flex;align-items:center;gap:12px;padding:4px 8px 24px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:20px}
-  .selo{
-    width:48px;height:48px;border-radius:14px;flex-shrink:0;
-    background:linear-gradient(145deg,#2f4593,#1d2b5e);
-    border:1.5px solid var(--dourado);
-    display:grid;place-items:center;color:var(--dourado);
-    box-shadow:0 4px 12px rgba(0,0,0,.25);
+  .marca{
+    background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:24px;
+    display:flex;align-items:center;justify-content:center
   }
-  .selo svg{width:26px;height:26px}
-  .marca b{display:block;font-size:17px;letter-spacing:.6px}
-  .marca small{display:block;font-size:12px;opacity:.7;margin-top:1px}
+  .marca img{width:100%;height:auto;display:block}
 
   .menu-titulo{font-size:11px;letter-spacing:1px;text-transform:uppercase;opacity:.55;padding:0 10px 10px}
   .menu{display:flex;flex-direction:column;gap:4px}
@@ -155,9 +150,8 @@
   /* ===== Relatório (tela e PDF) ===== */
   .relatorio{display:none;background:#fff;border:1px solid var(--borda);border-radius:16px;padding:32px;color:var(--texto)}
   .relatorio.ativo{display:block}
-  .rel-topo{display:flex;align-items:center;gap:16px;padding-bottom:18px;margin-bottom:22px;border-bottom:3px solid var(--azul)}
-  .rel-topo .selo{width:58px;height:58px;background:var(--azul);color:var(--dourado)}
-  .rel-topo .selo svg{width:30px;height:30px}
+  .rel-topo{display:flex;align-items:center;gap:20px;padding-bottom:18px;margin-bottom:22px;border-bottom:3px solid var(--azul)}
+  .rel-logo{height:64px;width:auto;display:block}
   .rel-topo h1{margin:0;font-size:22px;color:var(--azul)}
   .rel-topo p{margin:3px 0 0;font-size:13px;color:var(--texto-2)}
   .rel-mes{margin-left:auto;text-align:right}
@@ -191,7 +185,7 @@
   @media (max-width:800px){
     .app{grid-template-columns:1fr}
     .side{position:static;height:auto;padding:16px}
-    .marca{padding-bottom:12px;margin-bottom:12px}
+    .marca{max-width:260px;margin-bottom:12px}
     .menu{flex-direction:row;overflow-x:auto}
     .menu button{white-space:nowrap;width:auto}
     .menu-titulo,.side-rodape{display:none}
@@ -222,20 +216,7 @@
   <!-- BARRA LATERAL -->
   <aside class="side">
     <div class="marca">
-      <div class="selo">
-        <!-- Balança da Justiça -->
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3v17"/>
-          <path d="M8 20h8"/>
-          <path d="M5 7h14"/>
-          <path d="M5 7l-2.5 6h5L5 7z"/>
-          <path d="M19 7l-2.5 6h5L19 7z"/>
-        </svg>
-      </div>
-      <div>
-        <b>OAB</b>
-        <small>Santana de Parnaíba</small>
-      </div>
+      <img src="logo-oab.png" alt="OAB São Paulo - Subseção Santana de Parnaíba">
     </div>
 
     <div class="menu-titulo">Gerenciamento</div>
@@ -445,7 +426,7 @@
               <label for="mes-relatorio">Mês</label>
               <input type="month" id="mes-relatorio">
             </div>
-            <button class="btn btn-sec" onclick="gerarRelatorio(true)">Visualizar</button>
+            <button class="btn btn-sec" onclick="visualizarRelatorio()">Visualizar</button>
             <button class="btn btn-dourado" onclick="exportarPDF()">Exportar PDF</button>
           </div>
         </div>
@@ -792,7 +773,7 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
   }
 
   // ===== Relatório (planilha) =====
-  function gerarRelatorio(mostrarAviso){
+  function gerarRelatorio(){
     const mes = $('mes-relatorio').value;
     if(!mes){ toast('Escolha o mês do relatório.'); return false; }
 
@@ -806,7 +787,6 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
       return false;
     }
 
-    const [ano, m] = mes.split('-');
     const soma = k => lista.reduce((acc, r) => acc + (r[k] || 0), 0);
     const hoje = brData(hojeISO());
 
@@ -824,15 +804,10 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
 
     $('relatorio').innerHTML = `
       <div class="rel-topo">
-        <div class="selo">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3v17"/><path d="M8 20h8"/><path d="M5 7h14"/>
-            <path d="M5 7l-2.5 6h5L5 7z"/><path d="M19 7l-2.5 6h5L19 7z"/>
-          </svg>
-        </div>
+        <img class="rel-logo" src="logo-oab.png" alt="OAB São Paulo - Subseção Santana de Parnaíba">
         <div>
           <h1>Relatório mensal de atendimentos</h1>
-          <p>OAB SP · 247ª Subseção Santana de Parnaíba · Assistência Judiciária</p>
+          <p>Assistência Judiciária · OAB SP · 247ª Subseção Santana de Parnaíba</p>
         </div>
         <div class="rel-mes">
           <b>${nomeMesAno(mes)}</b>
@@ -882,13 +857,13 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
   }
 
   function visualizarRelatorio(){
-    if(gerarRelatorio(true))
+    if(gerarRelatorio())
       $('relatorio').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function exportarPDF(){
     if(!$('relatorio').classList.contains('ativo')){
-      if(!gerarRelatorio(true)) return;
+      if(!gerarRelatorio()) return;
     }
     setTimeout(() => window.print(), 150);
   }
