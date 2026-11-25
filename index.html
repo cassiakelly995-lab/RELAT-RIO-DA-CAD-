@@ -9,114 +9,219 @@
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
 <style>
   :root{
-    --azul:#0b2d5b; --azul-2:#1c5aa6; --azul-claro:#eef4fc;
-    --vermelho:#b3262e; --fundo:#f5f7fb; --branco:#ffffff;
-    --texto:#1f2937; --texto-2:#6b7280; --borda:#e3e8f0;
-    --verde:#15803d; --alerta:#fff4e5; --alerta-txt:#8a4b00;
+    --navy:#1f2d6e;
+    --accent:#4f5bd5;
+    --accent-claro:#eef0fc;
+    --fundo:#f4f6fb;
+    --branco:#ffffff;
+    --texto:#1e2536;
+    --texto-2:#667085;
+    --borda:#e4e7ef;
+    --perigo:#dc2626;
+    --perigo-claro:#fdecec;
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--fundo);color:var(--texto);font-size:15px}
+  body{
+    margin:0;font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--fundo);color:var(--texto);font-size:15px;line-height:1.5;
+  }
   button,input,textarea{font-family:inherit;font-size:inherit}
 
   /* Cabeçalho */
-  .topo{background:var(--azul);color:#fff}
-  .topo-in{max-width:1100px;margin:auto;padding:18px 20px;display:flex;align-items:center;gap:14px}
-  .selo{width:44px;height:44px;border-radius:10px;background:#fff;color:var(--azul);display:grid;place-items:center;font-weight:800;font-size:13px;letter-spacing:.5px;flex-shrink:0}
-  .topo h1{font-size:18px;margin:0;font-weight:700}
-  .topo p{margin:2px 0 0;font-size:12.5px;opacity:.8}
-  .status{margin-left:auto;font-size:12px;padding:6px 12px;border-radius:20px;background:rgba(255,255,255,.14);white-space:nowrap}
+  .topo{background:var(--navy);color:#fff}
+  .topo-in{max-width:1120px;margin:auto;padding:20px 24px;display:flex;align-items:center;gap:14px}
+  .selo{
+    width:42px;height:42px;border-radius:50%;background:#fff;color:var(--navy);
+    display:grid;place-items:center;font-weight:800;font-size:12px;flex-shrink:0
+  }
+  .topo h1{margin:0;font-size:18px;font-weight:700}
+  .topo p{margin:2px 0 0;font-size:13px;opacity:.75}
+  .status{
+    margin-left:auto;font-size:12px;font-weight:600;padding:6px 12px;
+    border-radius:20px;background:rgba(255,255,255,.14);white-space:nowrap
+  }
   .status.ok{background:#dcfce7;color:#14532d}
-  .status.erro{background:#fee2e2;color:#7f1d1d}
-  .faixa{height:4px;background:var(--vermelho)}
+  .status.erro{background:var(--perigo-claro);color:#7f1d1d}
 
-  /* Alerta */
-  .alerta{max-width:1100px;margin:16px auto 0;padding:14px 18px;border-radius:10px;background:var(--alerta);color:var(--alerta-txt);border:1px solid #f5d6a6;font-size:14px;line-height:1.5}
+  .alerta{
+    max-width:1120px;margin:20px auto 0;padding:14px 18px;border-radius:10px;
+    background:#fff7e6;color:#7a4a00;border:1px solid #f6d89a;font-size:14px
+  }
   .alerta[hidden]{display:none}
 
   /* Abas */
   nav{background:var(--branco);border-bottom:1px solid var(--borda);position:sticky;top:0;z-index:10}
-  .abas{max-width:1100px;margin:auto;display:flex;overflow-x:auto;padding:0 12px}
-  .aba{background:none;border:none;padding:14px 16px;cursor:pointer;color:var(--texto-2);font-weight:600;border-bottom:3px solid transparent;white-space:nowrap}
-  .aba:hover{color:var(--azul)}
-  .aba.ativa{color:var(--azul);border-bottom-color:var(--vermelho)}
+  .abas{max-width:1120px;margin:auto;display:flex;overflow-x:auto;padding:0 16px;gap:4px}
+  .aba{
+    background:none;border:none;padding:16px 14px;cursor:pointer;color:var(--texto-2);
+    font-weight:600;white-space:nowrap;border-bottom:3px solid transparent
+  }
+  .aba:hover{color:var(--navy)}
+  .aba.ativa{color:var(--accent);border-bottom-color:var(--accent)}
 
-  main{max-width:1100px;margin:24px auto;padding:0 16px 48px}
+  main{max-width:1120px;margin:28px auto;padding:0 20px 56px}
   .painel{display:none}
   .painel.ativo{display:block}
 
-  /* Cartões */
-  .card{background:var(--branco);border:1px solid var(--borda);border-radius:12px;padding:22px;margin-bottom:16px}
-  .card-titulo{font-size:13px;font-weight:700;color:var(--azul);text-transform:uppercase;letter-spacing:.6px;margin:0 0 16px}
-  .colunas{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .campo{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-  .campo:last-child{margin-bottom:0}
+  .titulo-pagina{font-size:22px;font-weight:700;color:var(--navy);margin:0 0 4px}
+  .sub-pagina{color:var(--texto-2);margin:0 0 22px;font-size:14px}
+  .card{
+    background:var(--branco);border:1px solid var(--borda);border-radius:14px;
+    padding:24px;margin-bottom:18px;box-shadow:0 1px 2px rgba(16,24,40,.04)
+  }
+  .card-titulo{margin:0 0 16px;font-size:14px;font-weight:700;color:var(--navy)}
+  .colunas{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .colunas-3{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+  /* Campos */
+  .campo{display:flex;flex-direction:column;gap:6px}
   label{font-size:13px;font-weight:600;color:var(--texto-2)}
-  input,textarea{width:100%;padding:11px 12px;border:1px solid var(--borda);border-radius:8px;background:#fff;color:var(--texto)}
-  input:focus,textarea:focus{outline:2px solid var(--azul-2);outline-offset:-1px;border-color:transparent}
+  input,textarea{
+    width:100%;padding:11px 14px;border:1px solid var(--borda);border-radius:10px;
+    background:#fff;color:var(--texto)
+  }
+  input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-claro)}
   textarea{resize:vertical}
 
-  /* Números */
-  .numeros{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-  .numero{background:var(--azul-claro);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px}
-  .numero label{color:var(--azul);text-align:center}
-  .numero input{text-align:center;font-size:28px;font-weight:700;color:var(--azul);padding:8px;background:#fff;border-color:#d4e2f5}
-
-  /* Chips */
-  .adicionar{display:flex;gap:8px}
-  .adicionar input{flex:1}
-  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;min-height:4px}
-  .chip{background:var(--azul-claro);color:var(--azul);border:1px solid #d4e2f5;padding:5px 6px 5px 12px;border-radius:20px;font-size:13px;display:inline-flex;align-items:center;gap:6px}
-  .chip button{background:none;border:none;color:var(--texto-2);cursor:pointer;font-size:16px;line-height:1;padding:0 4px}
-  .chip button:hover{color:var(--vermelho)}
-
-  /* Botões */
-  .btn{padding:11px 18px;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:background .15s}
-  .btn-primario{background:var(--azul);color:#fff}
-  .btn-primario:hover{background:var(--azul-2)}
-  .btn-sec{background:#eceff4;color:var(--texto)}
-  .btn-sec:hover{background:#dfe5ee}
-  .btn-perigo{background:none;color:var(--vermelho);padding:6px 10px;font-size:13px}
-  .btn-perigo:hover{background:#fbe9ea;border-radius:6px}
-  .btn-mini{padding:6px 10px;font-size:13px;border-radius:6px}
-  .acoes{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
-
-  /* Resultado */
-  .saida{white-space:pre-wrap;line-height:1.6;font-size:14.5px;background:#fbfcfe;border:1px solid var(--borda);border-left:4px solid var(--vermelho);border-radius:10px;padding:18px;margin-top:16px}
-  .vazio-msg{color:var(--texto-2);text-align:center;padding:24px}
-
-  /* Tabela */
-  .filtro-linha{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-  .filtro-linha .campo{margin:0;min-width:200px}
-  .totais{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
-  .total{background:var(--azul-claro);border-radius:10px;padding:14px;text-align:center}
-  .total b{display:block;font-size:24px;color:var(--azul)}
-  .total span{font-size:12px;color:var(--texto-2);text-transform:uppercase;letter-spacing:.4px}
-  table{width:100%;border-collapse:collapse}
-  th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--texto-2);padding:10px;border-bottom:2px solid var(--borda)}
-  td{padding:12px 10px;border-bottom:1px solid #eef1f6}
-  td.num, th.num{text-align:center}
-
-  /* Lista de equipe */
-  ul.lista{list-style:none;padding:0;margin:14px 0 0}
-  ul.lista li{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;border-bottom:1px solid #eef1f6}
-  ul.lista li.vazio{color:var(--texto-2);justify-content:center}
-
-  /* Toast */
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--azul);color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .25s}
-  .toast.mostrar{opacity:1}
-
-  .rodape{text-align:center;font-size:12px;color:var(--texto-2);margin-top:28px;line-height:1.5}
-
-  @media (max-width:700px){
-    .colunas{grid-template-columns:1fr}
-    .numeros,.totais{grid-template-columns:1fr}
-    .status{display:none}
+  /* Números do dia */
+  .numeros{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .numero{
+    background:var(--fundo);border-radius:12px;padding:18px;
+    display:flex;flex-direction:column;gap:10px;text-align:center
+  }
+  .numero label{color:var(--navy)}
+  .numero input{
+    text-align:center;font-size:28px;font-weight:700;color:var(--navy);
+    border:none;background:#fff;padding:10px;border-radius:10px
   }
 
+  /* Colaboradores (chips) */
+  .adicionar{display:flex;gap:8px}
+  .adicionar input{flex:1}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .chip{
+    background:var(--accent-claro);color:var(--navy);padding:6px 6px 6px 14px;
+    border-radius:999px;font-size:13px;display:inline-flex;align-items:center;gap:4px
+  }
+  .chip button{
+    background:none;border:none;color:var(--texto-2);cursor:pointer;font-size:16px;
+    line-height:1;width:22px;height:22px;border-radius:50%
+  }
+  .chip button:hover{background:#dfe2f8;color:var(--perigo)}
+
+  /* Botões */
+  .btn{
+    padding:11px 18px;border:none;border-radius:10px;font-weight:600;cursor:pointer;
+    transition:background .15s;white-space:nowrap
+  }
+  .btn-primario{background:var(--accent);color:#fff}
+  .btn-primario:hover{background:#3f4bc4}
+  .btn-sec{background:var(--branco);color:var(--navy);border:1px solid var(--borda)}
+  .btn-sec:hover{background:var(--fundo)}
+  .btn-perigo{background:none;color:var(--perigo);padding:6px 10px;font-size:13px;border-radius:8px}
+  .btn-perigo:hover{background:var(--perigo-claro)}
+  .btn-mini{padding:6px 12px;font-size:13px;border-radius:8px}
+  .acoes{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+
+  /* Resultado do dia */
+  .saida{
+    white-space:pre-wrap;line-height:1.65;font-size:14.5px;background:var(--fundo);
+    border-radius:12px;padding:20px;margin-top:18px;border-left:4px solid var(--accent)
+  }
+
+  /* Filtros e tabelas da tela */
+  .filtro-linha{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .filtro-linha .campo{min-width:220px}
+  .totais{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+  .total{background:var(--accent-claro);border-radius:12px;padding:16px;text-align:center}
+  .total b{display:block;font-size:26px;color:var(--navy)}
+  .total span{font-size:12px;color:var(--texto-2);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  table{width:100%;border-collapse:collapse}
+  th{
+    text-align:left;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+    color:var(--texto-2);padding:12px 10px;border-bottom:1px solid var(--borda)
+  }
+  td{padding:14px 10px;border-bottom:1px solid #f0f2f7;vertical-align:top}
+  tr:hover td{background:#fafbfe}
+  .num{text-align:center}
+  .vazio-msg{color:var(--texto-2);text-align:center;padding:28px}
+
+  /* Equipe */
+  ul.lista{list-style:none;padding:0;margin:16px 0 0}
+  ul.lista li{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 4px;border-bottom:1px solid #f0f2f7
+  }
+  ul.lista li.vazio{color:var(--texto-2);justify-content:center}
+
+  /* ===== RELATÓRIO (tela e PDF) ===== */
+  .relatorio{display:none;background:#fff;color:#1e2536}
+  .relatorio.ativo{display:block}
+  .rel-topo{
+    display:flex;align-items:center;gap:16px;padding-bottom:16px;margin-bottom:20px;
+    border-bottom:3px solid var(--navy)
+  }
+  .rel-topo .selo{width:56px;height:56px;font-size:15px;background:var(--navy);color:#fff}
+  .rel-topo h1{margin:0;font-size:22px;color:var(--navy)}
+  .rel-topo p{margin:3px 0 0;font-size:13px;color:var(--texto-2)}
+  .rel-mes{margin-left:auto;text-align:right}
+  .rel-mes b{display:block;font-size:20px;color:var(--navy)}
+  .rel-mes span{font-size:12px;color:var(--texto-2)}
+
+  .rel-resumo{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+  .rel-resumo div{background:var(--accent-claro);border-radius:10px;padding:12px;text-align:center}
+  .rel-resumo b{display:block;font-size:22px;color:var(--navy)}
+  .rel-resumo span{font-size:11px;color:var(--texto-2);text-transform:uppercase;font-weight:700;letter-spacing:.4px}
+
+  table.planilha{font-size:12.5px;border:1px solid var(--borda)}
+  table.planilha th{
+    background:var(--navy);color:#fff;border-bottom:none;padding:10px 8px;
+    font-size:11px;letter-spacing:.3px;text-align:center
+  }
+  table.planilha th.esq{text-align:left}
+  table.planilha td{padding:9px 8px;border-bottom:1px solid var(--borda);border-right:1px solid #f0f2f7}
+  table.planilha td:last-child{border-right:none}
+  table.planilha tbody tr:nth-child(even) td{background:#f7f9fd}
+  table.planilha tbody tr:hover td{background:#eef3fb}
+  table.planilha td.c{text-align:center}
+  table.planilha td.data{font-weight:700;color:var(--navy);white-space:nowrap}
+  table.planilha tfoot td{
+    background:var(--accent-claro);font-weight:700;color:var(--navy);
+    border-top:2px solid var(--navy);text-align:center
+  }
+  table.planilha tfoot td.esq{text-align:left}
+
+  .rel-rodape{
+    margin-top:28px;display:flex;justify-content:space-between;align-items:flex-end;
+    font-size:12px;color:var(--texto-2);gap:24px
+  }
+  .rel-assinatura{width:320px;border-top:1px solid #1e2536;padding-top:6px;text-align:center}
+
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--navy);
+    color:#fff;padding:12px 22px;border-radius:10px;font-size:14px;
+    box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;pointer-events:none;transition:opacity .25s
+  }
+  .toast.mostrar{opacity:1}
+  .rodape{text-align:center;font-size:12px;color:var(--texto-2);margin-top:32px;line-height:1.6}
+
+  @media (max-width:720px){
+    .colunas,.colunas-3{grid-template-columns:1fr}
+    .numeros,.totais,.rel-resumo{grid-template-columns:1fr 1fr}
+    .status{display:none}
+    .topo-in{padding:16px}
+  }
+
+  /* ===== IMPRESSÃO / PDF ===== */
+  @page{size:A4 landscape;margin:12mm}
   @media print{
     body *{visibility:hidden}
-    #saida-mensal,#saida-mensal *{visibility:visible}
-    #saida-mensal{position:absolute;left:0;top:0;width:100%;border:none;margin:0;padding:0}
+    #relatorio,#relatorio *{visibility:visible}
+    #relatorio{display:block!important;position:absolute;left:0;top:0;width:100%;padding:0;margin:0}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    table.planilha{page-break-inside:auto}
+    table.planilha tr{page-break-inside:avoid}
+    table.planilha thead{display:table-header-group}
   }
 </style>
 </head>
@@ -132,7 +237,6 @@
     <span id="status" class="status">Conectando…</span>
   </div>
 </header>
-<div class="faixa"></div>
 
 <div id="alerta" class="alerta" hidden></div>
 
@@ -149,17 +253,18 @@
 
   <!-- REGISTRAR DIA -->
   <section id="aba-registrar" class="painel ativo">
+    <h2 class="titulo-pagina">Registrar dia</h2>
+    <p class="sub-pagina">Preencha os números, a equipe do dia e as advogadas(os) de plantão.</p>
 
     <div class="card">
-      <h2 class="card-titulo">Dia do atendimento</h2>
       <div class="campo" style="max-width:260px">
-        <label for="data">Data</label>
+        <label for="data">Data do atendimento</label>
         <input type="date" id="data">
       </div>
     </div>
 
     <div class="card">
-      <h2 class="card-titulo">Números do dia</h2>
+      <h3 class="card-titulo">Números do dia</h3>
       <div class="numeros">
         <div class="numero">
           <label for="atendidas">Pessoas atendidas</label>
@@ -177,34 +282,35 @@
     </div>
 
     <div class="card">
-      <h2 class="card-titulo">Equipe do dia</h2>
+      <h3 class="card-titulo">Advogadas(os) do dia</h3>
       <div class="colunas">
         <div class="campo">
-          <label for="in-colab">Colaboradores</label>
-          <div class="adicionar">
-            <input id="in-colab" list="dl-colab" placeholder="Digite o nome e aperte Enter"
-                   onkeydown="if(event.key==='Enter'){event.preventDefault();addChip('colaboradores')}">
-            <button class="btn btn-sec" onclick="addChip('colaboradores')">Adicionar</button>
-          </div>
-          <div id="chips-colaboradores" class="chips"></div>
-          <datalist id="dl-colab"></datalist>
+          <label for="adv1">Advogada(o) 1</label>
+          <input id="adv1" list="dl-adv" placeholder="Digite ou escolha da lista">
         </div>
-
         <div class="campo">
-          <label for="in-adv">Advogados(as)</label>
-          <div class="adicionar">
-            <input id="in-adv" list="dl-adv" placeholder="Digite o nome e aperte Enter"
-                   onkeydown="if(event.key==='Enter'){event.preventDefault();addChip('advogados')}">
-            <button class="btn btn-sec" onclick="addChip('advogados')">Adicionar</button>
-          </div>
-          <div id="chips-advogados" class="chips"></div>
-          <datalist id="dl-adv"></datalist>
+          <label for="adv2">Advogada(o) 2</label>
+          <input id="adv2" list="dl-adv" placeholder="Digite ou escolha da lista">
         </div>
+      </div>
+      <datalist id="dl-adv"></datalist>
+    </div>
+
+    <div class="card">
+      <h3 class="card-titulo">Colaboradores do dia</h3>
+      <div class="campo">
+        <div class="adicionar">
+          <input id="in-colab" list="dl-colab" placeholder="Digite o nome e tecle Enter"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();addChip('colaboradores')}">
+          <button class="btn btn-sec" onclick="addChip('colaboradores')">Adicionar</button>
+        </div>
+        <div id="chips-colaboradores" class="chips"></div>
+        <datalist id="dl-colab"></datalist>
       </div>
     </div>
 
     <div class="card">
-      <h2 class="card-titulo">Observações</h2>
+      <h3 class="card-titulo">Observações</h3>
       <textarea id="obs" rows="4" placeholder="Ocorrências do dia (opcional)"></textarea>
     </div>
 
@@ -213,23 +319,26 @@
       <button class="btn btn-sec" onclick="limparFormulario()">Limpar formulário</button>
     </div>
 
-    <div id="saida-dia" class="saida" hidden></div>
-    <div class="acoes" id="acoes-dia" hidden style="margin-top:12px">
-      <button class="btn btn-sec" onclick="copiar('saida-dia')">Copiar texto</button>
-      <button class="btn btn-sec" onclick="window.print()">Imprimir</button>
+    <div id="saida-dia" class="card" hidden style="margin-top:18px">
+      <div id="texto-dia" class="saida"></div>
+      <div class="acoes">
+        <button class="btn btn-sec" onclick="copiar('texto-dia')">Copiar texto</button>
+      </div>
     </div>
   </section>
 
   <!-- HISTÓRICO -->
   <section id="aba-historico" class="painel">
+    <h2 class="titulo-pagina">Histórico</h2>
+    <p class="sub-pagina">Todos os dias registrados. Use o filtro para ver um mês.</p>
+
     <div class="card">
-      <h2 class="card-titulo">Histórico</h2>
       <div class="filtro-linha">
         <div class="campo">
           <label for="filtro-mes">Filtrar por mês</label>
           <input type="month" id="filtro-mes" onchange="renderHistorico()">
         </div>
-        <button class="btn btn-sec" onclick="document.getElementById('filtro-mes').value='';renderHistorico()">Mostrar todos</button>
+        <button class="btn btn-sec" onclick="limparFiltro()">Mostrar todos</button>
       </div>
 
       <div class="totais" id="totais-historico"></div>
@@ -241,6 +350,7 @@
             <th class="num">Atendidas</th>
             <th class="num">Nomeadas</th>
             <th class="num">Orientações</th>
+            <th>Advogadas(os)</th>
             <th></th>
           </tr>
         </thead>
@@ -251,29 +361,31 @@
 
   <!-- RELATÓRIO MENSAL -->
   <section id="aba-relatorio" class="painel">
+    <h2 class="titulo-pagina">Relatório mensal</h2>
+    <p class="sub-pagina">Escolha o mês, visualize a planilha e salve em PDF.</p>
+
     <div class="card">
-      <h2 class="card-titulo">Relatório mensal</h2>
       <div class="filtro-linha">
         <div class="campo">
           <label for="mes-relatorio">Mês</label>
           <input type="month" id="mes-relatorio">
         </div>
-        <button class="btn btn-primario" onclick="gerarMensal()">Gerar relatório</button>
-      </div>
-
-      <div id="saida-mensal" class="saida" hidden></div>
-      <div class="acoes" id="acoes-mensal" hidden style="margin-top:12px">
-        <button class="btn btn-sec" onclick="copiar('saida-mensal')">Copiar texto</button>
-        <button class="btn btn-sec" onclick="window.print()">Imprimir</button>
+        <button class="btn btn-sec" onclick="gerarRelatorio()">Visualizar</button>
+        <button class="btn btn-primario" onclick="salvarPDF()">Salvar em PDF</button>
       </div>
     </div>
+
+    <div id="relatorio" class="relatorio"></div>
   </section>
 
   <!-- EQUIPE -->
   <section id="aba-equipe" class="painel">
+    <h2 class="titulo-pagina">Equipe</h2>
+    <p class="sub-pagina">Cadastre os nomes uma vez. Eles aparecem como sugestão nos registros.</p>
+
     <div class="colunas">
       <div class="card">
-        <h2 class="card-titulo">Colaboradores</h2>
+        <h3 class="card-titulo">Colaboradores</h3>
         <div class="adicionar">
           <input id="eq-colab" placeholder="Nome do colaborador"
                  onkeydown="if(event.key==='Enter'){event.preventDefault();addEquipe('colaboradores')}">
@@ -283,7 +395,7 @@
       </div>
 
       <div class="card">
-        <h2 class="card-titulo">Advogados(as)</h2>
+        <h3 class="card-titulo">Advogados(as)</h3>
         <div class="adicionar">
           <input id="eq-adv" placeholder="Nome do(a) advogado(a)"
                  onkeydown="if(event.key==='Enter'){event.preventDefault();addEquipe('advogados')}">
@@ -295,7 +407,7 @@
   </section>
 
   <div class="rodape">
-    Este painel organiza os dados inseridos e gera textos de relatório.<br>
+    Este painel organiza os dados inseridos e gera relatórios.<br>
     A responsabilidade pelas informações registradas é de quem utiliza o sistema.
   </div>
 </main>
@@ -318,11 +430,13 @@
   const auth = firebase.auth();
 
   const SENHA_ADM = "fran88"; // senha para excluir registros
+  const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                 'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
   // ===== Estado =====
   let registros = [];
   let equipe = { colaboradores: [], advogados: [] };
-  let chips = { colaboradores: [], advogados: [] };
+  let chips = { colaboradores: [] };
   let editandoId = null;
   let ouvintesAtivos = false;
 
@@ -357,11 +471,14 @@
 
   function erroDb(err){
     console.error(err);
-    mostrarAlerta(`<b>Não foi possível gravar.</b> Verifique a internet e as regras do Firebase. Detalhe: ${esc(err.message || err.code)}`);
+    mostrarAlerta(`<b>Não foi possível concluir a operação.</b> Verifique a internet e as regras do Firebase. Detalhe: ${esc(err.message || err.code)}`);
   }
 
   // Aceita registros antigos (com "total" e "drs") e novos
   function normaliza(r){
+    const advs = Array.isArray(r.advogados)
+      ? r.advogados
+      : (r.drs ? String(r.drs).split(/\n|,/).map(s => s.trim()).filter(Boolean) : []);
     return {
       id: r.id,
       data_original: r.data_original || '',
@@ -370,7 +487,7 @@
       nomeadas: r.nomeadas ?? 0,
       orientacoes: r.orientacoes ?? 0,
       colaboradores: r.colaboradores || [],
-      advogados: r.advogados || (r.drs ? String(r.drs).split(/\n|,/).map(s => s.trim()).filter(Boolean) : []),
+      advogados: advs.filter(Boolean).slice(0, 2),
       obs: r.obs || ''
     };
   }
@@ -383,9 +500,9 @@
     if(nome === 'historico') renderHistorico();
   }
 
-  // ===== Chips =====
+  // ===== Colaboradores (chips) =====
   function addChip(tipo){
-    const input = $(tipo === 'colaboradores' ? 'in-colab' : 'in-adv');
+    const input = $('in-colab');
     const nome = input.value.trim();
     if(!nome) return;
     if(!chips[tipo].includes(nome)) chips[tipo].push(nome);
@@ -445,7 +562,9 @@
     const d = $('data').value;
     if(!d) return toast('Selecione a data do atendimento.');
 
+    const advogados = [$('adv1').value.trim(), $('adv2').value.trim()].filter(Boolean);
     const atendidas = num($('atendidas').value);
+
     const rel = {
       id: editandoId || Date.now(),
       data_original: d,
@@ -455,7 +574,7 @@
       orientacoes: num($('orientacoes').value),
       total: atendidas, // compatibilidade com registros antigos
       colaboradores: [...chips.colaboradores],
-      advogados: [...chips.advogados],
+      advogados,
       obs: $('obs').value.trim()
     };
 
@@ -475,29 +594,31 @@ Pessoas atendidas: ${r.atendidas}
 Pessoas nomeadas: ${r.nomeadas}
 Orientações: ${r.orientacoes}
 
+Advogadas(os): ${r.advogados.join(' e ') || '—'}
 Colaboradores: ${r.colaboradores.join(', ') || '—'}
-Advogados(as): ${r.advogados.join(', ') || '—'}
 
 Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
 
-    $('saida-dia').textContent = texto;
+    $('texto-dia').textContent = texto;
     $('saida-dia').hidden = false;
-    $('acoes-dia').hidden = false;
     $('saida-dia').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function limparFormulario(){
-    ['atendidas','nomeadas','orientacoes','obs','in-colab','in-adv'].forEach(id => $(id).value = '');
-    chips = { colaboradores: [], advogados: [] };
+    ['atendidas','nomeadas','orientacoes','obs','in-colab','adv1','adv2'].forEach(id => $(id).value = '');
+    chips = { colaboradores: [] };
     renderChips('colaboradores');
-    renderChips('advogados');
     $('data').value = hojeISO();
     $('saida-dia').hidden = true;
-    $('acoes-dia').hidden = true;
     editandoId = null;
   }
 
   // ===== Histórico =====
+  function limparFiltro(){
+    $('filtro-mes').value = '';
+    renderHistorico();
+  }
+
   function renderHistorico(){
     const mes = $('filtro-mes').value;
     const lista = registros
@@ -517,12 +638,13 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
             <td class="num">${r.atendidas}</td>
             <td class="num">${r.nomeadas}</td>
             <td class="num">${r.orientacoes}</td>
+            <td>${esc(r.advogados.join(' / ')) || '—'}</td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn btn-sec btn-mini" onclick="recuperar(${r.id})">Ver / Editar</button>
               <button class="btn btn-perigo" onclick="excluir(${r.id})">Excluir</button>
             </td>
           </tr>`).join('')
-      : '<tr><td colspan="5" class="vazio-msg">Nenhum registro encontrado.</td></tr>';
+      : '<tr><td colspan="6" class="vazio-msg">Nenhum registro encontrado.</td></tr>';
   }
 
   function recuperar(id){
@@ -535,9 +657,10 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
     $('nomeadas').value = r.nomeadas;
     $('orientacoes').value = r.orientacoes;
     $('obs').value = r.obs;
-    chips = { colaboradores: [...r.colaboradores], advogados: [...r.advogados] };
+    $('adv1').value = r.advogados[0] || '';
+    $('adv2').value = r.advogados[1] || '';
+    chips = { colaboradores: [...r.colaboradores] };
     renderChips('colaboradores');
-    renderChips('advogados');
     abrirAba('registrar');
     mostrarDia(r);
   }
@@ -552,50 +675,101 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
     }
   }
 
-  // ===== Relatório mensal =====
-  function gerarMensal(){
+  // ===== Relatório mensal (planilha) =====
+  function gerarRelatorio(){
     const mes = $('mes-relatorio').value;
     if(!mes) return toast('Escolha o mês do relatório.');
 
     const lista = registros
       .filter(r => mesDe(r) === mes)
       .sort((a, b) => a.data_original.localeCompare(b.data_original));
-    if(!lista.length) return toast('Nenhum registro para este mês.');
+    if(!lista.length){
+      $('relatorio').classList.remove('ativo');
+      return toast('Nenhum registro para este mês.');
+    }
 
-    const soma = k => lista.reduce((acc, r) => acc + (r[k] || 0), 0);
-    const colabs = [...new Set(lista.flatMap(r => r.colaboradores))];
-    const advs = [...new Set(lista.flatMap(r => r.advogados))];
-    const ocorrencias = lista.filter(r => r.obs)
-      .map(r => `• ${r.data}: ${r.obs}`).join('\n') || 'Nenhuma ocorrência registrada.';
     const [ano, m] = mes.split('-');
+    const nomeMes = MESES[parseInt(m, 10) - 1];
+    const soma = k => lista.reduce((acc, r) => acc + (r[k] || 0), 0);
+    const hoje = brData(hojeISO());
 
-    const texto =
-`RELATÓRIO MENSAL DE ATENDIMENTOS – ${m}/${ano}
+    const linhas = lista.map(r => `
+      <tr>
+        <td class="data">${esc(r.data)}</td>
+        <td class="c">${r.atendidas}</td>
+        <td class="c">${r.nomeadas}</td>
+        <td class="c">${r.orientacoes}</td>
+        <td>${esc(r.advogados[0] || '—')}</td>
+        <td>${esc(r.advogados[1] || '—')}</td>
+        <td>${esc(r.colaboradores.join(', ') || '—')}</td>
+        <td>${esc(r.obs || '—')}</td>
+      </tr>`).join('');
 
-Dias registrados: ${lista.length}
+    $('relatorio').innerHTML = `
+      <div class="rel-topo">
+        <div class="selo">OAB</div>
+        <div>
+          <h1>Relatório mensal de atendimentos</h1>
+          <p>OAB SP · 247ª Subseção Santana de Parnaíba · Assistência Judiciária</p>
+        </div>
+        <div class="rel-mes">
+          <b>${nomeMes} de ${ano}</b>
+          <span>Emitido em ${hoje}</span>
+        </div>
+      </div>
 
-Pessoas atendidas: ${soma('atendidas')}
-Pessoas nomeadas: ${soma('nomeadas')}
-Orientações: ${soma('orientacoes')}
+      <div class="rel-resumo">
+        <div><b>${lista.length}</b><span>Dias registrados</span></div>
+        <div><b>${soma('atendidas')}</b><span>Pessoas atendidas</span></div>
+        <div><b>${soma('nomeadas')}</b><span>Pessoas nomeadas</span></div>
+        <div><b>${soma('orientacoes')}</b><span>Orientações</span></div>
+      </div>
 
-Colaboradores no período: ${colabs.join(', ') || '—'}
-Advogados(as) no período: ${advs.join(', ') || '—'}
+      <table class="planilha">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Atendidas</th>
+            <th>Nomeadas</th>
+            <th>Orientações</th>
+            <th class="esq">Advogada(o) 1</th>
+            <th class="esq">Advogada(o) 2</th>
+            <th class="esq">Colaboradores</th>
+            <th class="esq">Observações</th>
+          </tr>
+        </thead>
+        <tbody>${linhas}</tbody>
+        <tfoot>
+          <tr>
+            <td class="esq">Total do mês</td>
+            <td>${soma('atendidas')}</td>
+            <td>${soma('nomeadas')}</td>
+            <td>${soma('orientacoes')}</td>
+            <td colspan="4"></td>
+          </tr>
+        </tfoot>
+      </table>
 
-RESUMO DE OCORRÊNCIAS:
-${ocorrencias}
+      <div class="rel-rodape">
+        <span>Documento gerado pelo Painel de Atendimento.</span>
+        <div class="rel-assinatura">Responsável pelo registro</div>
+      </div>`;
 
-Responsável pelo registro: ____________________________
-
-OAB Santana de Parnaíba`;
-
-    $('saida-mensal').textContent = texto;
-    $('saida-mensal').hidden = false;
-    $('acoes-mensal').hidden = false;
+    $('relatorio').classList.add('ativo');
+    $('relatorio').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  // ===== Copiar (funciona também abrindo o arquivo direto) =====
-  async function copiar(idSaida){
-    const texto = $(idSaida).textContent;
+  function salvarPDF(){
+    if(!$('relatorio').classList.contains('ativo')){
+      gerarRelatorio();
+      if(!$('relatorio').classList.contains('ativo')) return;
+    }
+    setTimeout(() => window.print(), 150);
+  }
+
+  // ===== Copiar =====
+  async function copiar(idTexto){
+    const texto = $(idTexto).textContent;
     try {
       await navigator.clipboard.writeText(texto);
       toast('Texto copiado.');
@@ -635,8 +809,8 @@ OAB Santana de Parnaíba`;
   auth.signInAnonymously().catch(err => {
     console.error(err);
     setStatus('erro', 'Offline');
-    const motivo = err.code === 'auth/admin-restricted-operation' || err.code === 'auth/operation-not-allowed'
-      ? 'O <b>login anônimo</b> ainda não está ativado no Firebase. Veja as instruções abaixo.'
+    const motivo = (err.code === 'auth/admin-restricted-operation' || err.code === 'auth/operation-not-allowed')
+      ? 'O login anônimo ainda não está ativado no Firebase.'
       : 'Verifique sua internet e tente novamente.';
     mostrarAlerta(`<b>Não foi possível conectar ao banco de dados.</b> ${motivo}<br><small>Código: ${esc(err.code || err.message)}</small>`);
   });
@@ -651,7 +825,6 @@ OAB Santana de Parnaíba`;
   // ===== Início =====
   $('data').value = hojeISO();
   renderChips('colaboradores');
-  renderChips('advogados');
 </script>
 </body>
 </html>
