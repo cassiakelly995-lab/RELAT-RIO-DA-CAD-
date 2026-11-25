@@ -3,223 +3,213 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel de Atendimento · OAB Santana de Parnaíba</title>
+<title>Central de Atendimento · OAB Santana de Parnaíba</title>
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
 <style>
   :root{
-    --navy:#1f2d6e;
-    --accent:#4f5bd5;
-    --accent-claro:#eef0fc;
-    --fundo:#f4f6fb;
+    --azul:#1d2b5e;
+    --azul-2:#2a3c7a;
+    --azul-claro:#eef1fa;
+    --dourado:#c9a227;
+    --dourado-claro:#fbf5e0;
+    --verde:#15803d;
+    --laranja:#c2410c;
+    --fundo:#f3f5fa;
     --branco:#ffffff;
-    --texto:#1e2536;
-    --texto-2:#667085;
-    --borda:#e4e7ef;
-    --perigo:#dc2626;
-    --perigo-claro:#fdecec;
+    --texto:#1c2333;
+    --texto-2:#6b7385;
+    --borda:#e3e7f0;
+    --perigo:#b91c1c;
+    --perigo-claro:#fde8e8;
   }
   *{box-sizing:border-box}
-  body{
-    margin:0;font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--fundo);color:var(--texto);font-size:15px;line-height:1.5;
-  }
-  button,input,textarea{font-family:inherit;font-size:inherit}
+  body{margin:0;font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--fundo);color:var(--texto);font-size:15px;line-height:1.5}
+  button,input,textarea,select{font-family:inherit;font-size:inherit}
 
-  /* Cabeçalho */
-  .topo{background:var(--navy);color:#fff}
-  .topo-in{max-width:1120px;margin:auto;padding:20px 24px;display:flex;align-items:center;gap:14px}
+  /* ===== Layout ===== */
+  .app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+
+  /* ===== Barra lateral ===== */
+  .side{background:var(--azul);color:#fff;padding:24px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+  .marca{display:flex;align-items:center;gap:12px;padding:4px 8px 24px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:20px}
   .selo{
-    width:42px;height:42px;border-radius:50%;background:#fff;color:var(--navy);
-    display:grid;place-items:center;font-weight:800;font-size:12px;flex-shrink:0
+    width:48px;height:48px;border-radius:14px;flex-shrink:0;
+    background:linear-gradient(145deg,#2f4593,#1d2b5e);
+    border:1.5px solid var(--dourado);
+    display:grid;place-items:center;color:var(--dourado);
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
   }
-  .topo h1{margin:0;font-size:18px;font-weight:700}
-  .topo p{margin:2px 0 0;font-size:13px;opacity:.75}
-  .status{
-    margin-left:auto;font-size:12px;font-weight:600;padding:6px 12px;
-    border-radius:20px;background:rgba(255,255,255,.14);white-space:nowrap
-  }
-  .status.ok{background:#dcfce7;color:#14532d}
-  .status.erro{background:var(--perigo-claro);color:#7f1d1d}
+  .selo svg{width:26px;height:26px}
+  .marca b{display:block;font-size:17px;letter-spacing:.6px}
+  .marca small{display:block;font-size:12px;opacity:.7;margin-top:1px}
 
-  .alerta{
-    max-width:1120px;margin:20px auto 0;padding:14px 18px;border-radius:10px;
-    background:#fff7e6;color:#7a4a00;border:1px solid #f6d89a;font-size:14px
+  .menu-titulo{font-size:11px;letter-spacing:1px;text-transform:uppercase;opacity:.55;padding:0 10px 10px}
+  .menu{display:flex;flex-direction:column;gap:4px}
+  .menu button{
+    display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+    background:none;border:none;color:rgba(255,255,255,.78);padding:11px 12px;border-radius:10px;
+    cursor:pointer;font-weight:500
   }
+  .menu button svg{width:18px;height:18px;flex-shrink:0}
+  .menu button:hover{background:rgba(255,255,255,.08);color:#fff}
+  .menu button.ativa{background:#fff;color:var(--azul);font-weight:700}
+
+  .side-rodape{margin-top:auto;font-size:12px;opacity:.6;padding:16px 10px 0;border-top:1px solid rgba(255,255,255,.12);line-height:1.6}
+
+  /* ===== Conteúdo ===== */
+  .conteudo{min-width:0;display:flex;flex-direction:column}
+  .topo{
+    background:var(--branco);border-bottom:1px solid var(--borda);
+    padding:18px 32px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:5
+  }
+  .topo .trilha{font-size:13px;color:var(--texto-2)}
+  .topo .trilha b{color:var(--azul)}
+  .topo .data-hoje{margin-left:auto;font-size:13px;color:var(--texto-2)}
+  .status{font-size:12px;font-weight:700;padding:6px 12px;border-radius:20px;background:#f1f3f8;color:var(--texto-2);white-space:nowrap}
+  .status.ok{background:#dcfce7;color:var(--verde)}
+  .status.erro{background:var(--perigo-claro);color:var(--perigo)}
+
+  main{padding:28px 32px 56px;max-width:1200px;width:100%}
+  .alerta{margin:20px 32px 0;padding:14px 18px;border-radius:12px;background:#fff7e6;color:#7a4a00;border:1px solid #f6d89a;font-size:14px}
   .alerta[hidden]{display:none}
 
-  /* Abas */
-  nav{background:var(--branco);border-bottom:1px solid var(--borda);position:sticky;top:0;z-index:10}
-  .abas{max-width:1120px;margin:auto;display:flex;overflow-x:auto;padding:0 16px;gap:4px}
-  .aba{
-    background:none;border:none;padding:16px 14px;cursor:pointer;color:var(--texto-2);
-    font-weight:600;white-space:nowrap;border-bottom:3px solid transparent
-  }
-  .aba:hover{color:var(--navy)}
-  .aba.ativa{color:var(--accent);border-bottom-color:var(--accent)}
+  .view{display:none}
+  .view.ativa{display:block}
+  .titulo{font-size:24px;font-weight:700;color:var(--azul);margin:0 0 4px}
+  .subtitulo{color:var(--texto-2);margin:0 0 24px;font-size:14px}
 
-  main{max-width:1120px;margin:28px auto;padding:0 20px 56px}
-  .painel{display:none}
-  .painel.ativo{display:block}
+  /* ===== Cartões ===== */
+  .card{background:var(--branco);border:1px solid var(--borda);border-radius:16px;padding:24px;margin-bottom:18px}
+  .card-titulo{margin:0 0 16px;font-size:13px;font-weight:700;color:var(--azul);text-transform:uppercase;letter-spacing:.6px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
 
-  .titulo-pagina{font-size:22px;font-weight:700;color:var(--navy);margin:0 0 4px}
-  .sub-pagina{color:var(--texto-2);margin:0 0 22px;font-size:14px}
-  .card{
-    background:var(--branco);border:1px solid var(--borda);border-radius:14px;
-    padding:24px;margin-bottom:18px;box-shadow:0 1px 2px rgba(16,24,40,.04)
-  }
-  .card-titulo{margin:0 0 16px;font-size:14px;font-weight:700;color:var(--navy)}
-  .colunas{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-  .colunas-3{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .kpi{background:var(--branco);border:1px solid var(--borda);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px}
+  .kpi-topo{display:flex;align-items:center;justify-content:space-between}
+  .kpi-icone{width:38px;height:38px;border-radius:10px;display:grid;place-items:center}
+  .kpi-icone svg{width:20px;height:20px}
+  .kpi b{font-size:34px;font-weight:700;color:var(--texto);line-height:1}
+  .kpi span{font-size:13px;color:var(--texto-2);font-weight:600}
+  .kpi.azul .kpi-icone{background:var(--azul-claro);color:var(--azul)}
+  .kpi.verde .kpi-icone{background:#e7f6ec;color:var(--verde)}
+  .kpi.laranja .kpi-icone{background:#fff0e6;color:var(--laranja)}
+  .kpi.dourado .kpi-icone{background:var(--dourado-claro);color:#8a6d12}
 
-  /* Campos */
+  /* ===== Formulários ===== */
   .campo{display:flex;flex-direction:column;gap:6px}
   label{font-size:13px;font-weight:600;color:var(--texto-2)}
-  input,textarea{
-    width:100%;padding:11px 14px;border:1px solid var(--borda);border-radius:10px;
-    background:#fff;color:var(--texto)
-  }
-  input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-claro)}
+  input,textarea,select{width:100%;padding:11px 14px;border:1px solid var(--borda);border-radius:10px;background:#fff;color:var(--texto)}
+  input:focus,textarea:focus{outline:none;border-color:var(--azul-2);box-shadow:0 0 0 3px var(--azul-claro)}
   textarea{resize:vertical}
-
-  /* Números do dia */
-  .numeros{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-  .numero{
-    background:var(--fundo);border-radius:12px;padding:18px;
-    display:flex;flex-direction:column;gap:10px;text-align:center
-  }
-  .numero label{color:var(--navy)}
-  .numero input{
-    text-align:center;font-size:28px;font-weight:700;color:var(--navy);
-    border:none;background:#fff;padding:10px;border-radius:10px
-  }
-
-  /* Colaboradores (chips) */
+  .linha{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+  .linha .campo{min-width:200px}
   .adicionar{display:flex;gap:8px}
   .adicionar input{flex:1}
-  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-  .chip{
-    background:var(--accent-claro);color:var(--navy);padding:6px 6px 6px 14px;
-    border-radius:999px;font-size:13px;display:inline-flex;align-items:center;gap:4px
-  }
-  .chip button{
-    background:none;border:none;color:var(--texto-2);cursor:pointer;font-size:16px;
-    line-height:1;width:22px;height:22px;border-radius:50%
-  }
-  .chip button:hover{background:#dfe2f8;color:var(--perigo)}
 
-  /* Botões */
-  .btn{
-    padding:11px 18px;border:none;border-radius:10px;font-weight:600;cursor:pointer;
-    transition:background .15s;white-space:nowrap
-  }
-  .btn-primario{background:var(--accent);color:#fff}
-  .btn-primario:hover{background:#3f4bc4}
-  .btn-sec{background:var(--branco);color:var(--navy);border:1px solid var(--borda)}
+  .numeros{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .numero{background:var(--fundo);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px}
+  .numero label{color:var(--azul)}
+  .numero input{text-align:center;font-size:28px;font-weight:700;color:var(--azul);border:none;background:#fff;padding:10px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .chip{background:var(--azul-claro);color:var(--azul);padding:6px 6px 6px 14px;border-radius:999px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+  .chip button{background:none;border:none;color:var(--texto-2);cursor:pointer;font-size:16px;width:22px;height:22px;border-radius:50%}
+  .chip button:hover{background:#dde3f5;color:var(--perigo)}
+
+  /* ===== Botões ===== */
+  .btn{padding:11px 18px;border:none;border-radius:10px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s}
+  .btn-primario{background:var(--azul);color:#fff}
+  .btn-primario:hover{background:var(--azul-2)}
+  .btn-dourado{background:var(--dourado);color:#fff}
+  .btn-dourado:hover{background:#b8921f}
+  .btn-sec{background:#fff;color:var(--azul);border:1px solid var(--borda)}
   .btn-sec:hover{background:var(--fundo)}
   .btn-perigo{background:none;color:var(--perigo);padding:6px 10px;font-size:13px;border-radius:8px}
   .btn-perigo:hover{background:var(--perigo-claro)}
   .btn-mini{padding:6px 12px;font-size:13px;border-radius:8px}
   .acoes{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
 
-  /* Resultado do dia */
-  .saida{
-    white-space:pre-wrap;line-height:1.65;font-size:14.5px;background:var(--fundo);
-    border-radius:12px;padding:20px;margin-top:18px;border-left:4px solid var(--accent)
-  }
-
-  /* Filtros e tabelas da tela */
-  .filtro-linha{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-  .filtro-linha .campo{min-width:220px}
-  .totais{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
-  .total{background:var(--accent-claro);border-radius:12px;padding:16px;text-align:center}
-  .total b{display:block;font-size:26px;color:var(--navy)}
-  .total span{font-size:12px;color:var(--texto-2);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  /* ===== Tabelas ===== */
   table{width:100%;border-collapse:collapse}
-  th{
-    text-align:left;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
-    color:var(--texto-2);padding:12px 10px;border-bottom:1px solid var(--borda)
-  }
-  td{padding:14px 10px;border-bottom:1px solid #f0f2f7;vertical-align:top}
+  th{text-align:left;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--texto-2);padding:12px 10px;border-bottom:1px solid var(--borda)}
+  td{padding:14px 10px;border-bottom:1px solid #f0f2f7;vertical-align:middle}
   tr:hover td{background:#fafbfe}
   .num{text-align:center}
+  .acoes-td{text-align:right;white-space:nowrap}
   .vazio-msg{color:var(--texto-2);text-align:center;padding:28px}
+  .totais{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  .total{background:var(--azul-claro);border-radius:14px;padding:16px;text-align:center}
+  .total b{display:block;font-size:26px;color:var(--azul)}
+  .total span{font-size:12px;color:var(--texto-2);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
 
-  /* Equipe */
+  /* ===== Saída de texto ===== */
+  .saida{white-space:pre-wrap;line-height:1.65;font-size:14.5px;background:var(--fundo);border-radius:12px;padding:20px;border-left:4px solid var(--dourado)}
+
+  /* ===== Equipe ===== */
   ul.lista{list-style:none;padding:0;margin:16px 0 0}
-  ul.lista li{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:12px 4px;border-bottom:1px solid #f0f2f7
-  }
+  ul.lista li{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:1px solid #f0f2f7}
   ul.lista li.vazio{color:var(--texto-2);justify-content:center}
 
-  /* ===== RELATÓRIO (tela e PDF) ===== */
-  .relatorio{display:none;background:#fff;color:#1e2536}
+  /* ===== Relatório (tela e PDF) ===== */
+  .relatorio{display:none;background:#fff;border:1px solid var(--borda);border-radius:16px;padding:32px;color:var(--texto)}
   .relatorio.ativo{display:block}
-  .rel-topo{
-    display:flex;align-items:center;gap:16px;padding-bottom:16px;margin-bottom:20px;
-    border-bottom:3px solid var(--navy)
-  }
-  .rel-topo .selo{width:56px;height:56px;font-size:15px;background:var(--navy);color:#fff}
-  .rel-topo h1{margin:0;font-size:22px;color:var(--navy)}
+  .rel-topo{display:flex;align-items:center;gap:16px;padding-bottom:18px;margin-bottom:22px;border-bottom:3px solid var(--azul)}
+  .rel-topo .selo{width:58px;height:58px;background:var(--azul);color:var(--dourado)}
+  .rel-topo .selo svg{width:30px;height:30px}
+  .rel-topo h1{margin:0;font-size:22px;color:var(--azul)}
   .rel-topo p{margin:3px 0 0;font-size:13px;color:var(--texto-2)}
   .rel-mes{margin-left:auto;text-align:right}
-  .rel-mes b{display:block;font-size:20px;color:var(--navy)}
+  .rel-mes b{display:block;font-size:20px;color:var(--azul)}
   .rel-mes span{font-size:12px;color:var(--texto-2)}
-
-  .rel-resumo{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-  .rel-resumo div{background:var(--accent-claro);border-radius:10px;padding:12px;text-align:center}
-  .rel-resumo b{display:block;font-size:22px;color:var(--navy)}
+  .rel-resumo{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+  .rel-resumo div{background:var(--azul-claro);border-radius:12px;padding:14px;text-align:center}
+  .rel-resumo b{display:block;font-size:22px;color:var(--azul)}
   .rel-resumo span{font-size:11px;color:var(--texto-2);text-transform:uppercase;font-weight:700;letter-spacing:.4px}
-
   table.planilha{font-size:12.5px;border:1px solid var(--borda)}
-  table.planilha th{
-    background:var(--navy);color:#fff;border-bottom:none;padding:10px 8px;
-    font-size:11px;letter-spacing:.3px;text-align:center
-  }
+  table.planilha th{background:var(--azul);color:#fff;border-bottom:none;padding:10px 8px;font-size:11px;text-align:center}
   table.planilha th.esq{text-align:left}
   table.planilha td{padding:9px 8px;border-bottom:1px solid var(--borda);border-right:1px solid #f0f2f7}
   table.planilha td:last-child{border-right:none}
   table.planilha tbody tr:nth-child(even) td{background:#f7f9fd}
-  table.planilha tbody tr:hover td{background:#eef3fb}
+  table.planilha tbody tr:hover td{background:var(--azul-claro)}
   table.planilha td.c{text-align:center}
-  table.planilha td.data{font-weight:700;color:var(--navy);white-space:nowrap}
-  table.planilha tfoot td{
-    background:var(--accent-claro);font-weight:700;color:var(--navy);
-    border-top:2px solid var(--navy);text-align:center
-  }
+  table.planilha td.data{font-weight:700;color:var(--azul);white-space:nowrap}
+  table.planilha tfoot td{background:var(--dourado-claro);font-weight:700;color:var(--azul);border-top:2px solid var(--dourado);text-align:center}
   table.planilha tfoot td.esq{text-align:left}
+  .rel-rodape{margin-top:28px;display:flex;justify-content:space-between;align-items:flex-end;font-size:12px;color:var(--texto-2);gap:24px}
+  .rel-assinatura{width:320px;border-top:1px solid var(--texto);padding-top:6px;text-align:center}
 
-  .rel-rodape{
-    margin-top:28px;display:flex;justify-content:space-between;align-items:flex-end;
-    font-size:12px;color:var(--texto-2);gap:24px
-  }
-  .rel-assinatura{width:320px;border-top:1px solid #1e2536;padding-top:6px;text-align:center}
-
-  .toast{
-    position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--navy);
-    color:#fff;padding:12px 22px;border-radius:10px;font-size:14px;
-    box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;pointer-events:none;transition:opacity .25s
-  }
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--azul);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .25s;z-index:50}
   .toast.mostrar{opacity:1}
-  .rodape{text-align:center;font-size:12px;color:var(--texto-2);margin-top:32px;line-height:1.6}
 
-  @media (max-width:720px){
-    .colunas,.colunas-3{grid-template-columns:1fr}
-    .numeros,.totais,.rel-resumo{grid-template-columns:1fr 1fr}
-    .status{display:none}
-    .topo-in{padding:16px}
+  /* ===== Responsivo ===== */
+  @media (max-width:980px){
+    .grid-4,.totais,.rel-resumo{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:800px){
+    .app{grid-template-columns:1fr}
+    .side{position:static;height:auto;padding:16px}
+    .marca{padding-bottom:12px;margin-bottom:12px}
+    .menu{flex-direction:row;overflow-x:auto}
+    .menu button{white-space:nowrap;width:auto}
+    .menu-titulo,.side-rodape{display:none}
+    .topo{padding:14px 18px;position:static}
+    .topo .data-hoje{display:none}
+    main{padding:20px 18px 48px}
+    .alerta{margin:16px 18px 0}
+    .grid-2,.numeros{grid-template-columns:1fr}
+    .grid-4,.totais,.rel-resumo{grid-template-columns:1fr 1fr}
   }
 
-  /* ===== IMPRESSÃO / PDF ===== */
+  /* ===== PDF / Impressão ===== */
   @page{size:A4 landscape;margin:12mm}
   @media print{
     body *{visibility:hidden}
     #relatorio,#relatorio *{visibility:visible}
-    #relatorio{display:block!important;position:absolute;left:0;top:0;width:100%;padding:0;margin:0}
+    #relatorio{display:block!important;position:absolute;left:0;top:0;width:100%;border:none;padding:0;margin:0;border-radius:0}
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    table.planilha{page-break-inside:auto}
     table.planilha tr{page-break-inside:avoid}
     table.planilha thead{display:table-header-group}
   }
@@ -227,190 +217,273 @@
 </head>
 <body>
 
-<header class="topo">
-  <div class="topo-in">
-    <div class="selo">OAB</div>
-    <div>
-      <h1>Painel de Atendimento</h1>
-      <p>OAB SP · 247ª Subseção Santana de Parnaíba</p>
+<div class="app">
+
+  <!-- BARRA LATERAL -->
+  <aside class="side">
+    <div class="marca">
+      <div class="selo">
+        <!-- Balança da Justiça -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v17"/>
+          <path d="M8 20h8"/>
+          <path d="M5 7h14"/>
+          <path d="M5 7l-2.5 6h5L5 7z"/>
+          <path d="M19 7l-2.5 6h5L19 7z"/>
+        </svg>
+      </div>
+      <div>
+        <b>OAB</b>
+        <small>Santana de Parnaíba</small>
+      </div>
     </div>
-    <span id="status" class="status">Conectando…</span>
+
+    <div class="menu-titulo">Gerenciamento</div>
+    <nav class="menu">
+      <button data-view="visao" class="ativa" onclick="mostrarView('visao')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Visão geral
+      </button>
+      <button data-view="registrar" onclick="mostrarView('registrar')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Registrar dia
+      </button>
+      <button data-view="historico" onclick="mostrarView('historico')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        Histórico
+      </button>
+      <button data-view="relatorios" onclick="mostrarView('relatorios')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+        Relatórios
+      </button>
+      <button data-view="equipe" onclick="mostrarView('equipe')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.5 3-6 7-6s7 2.5 7 6"/><path d="M16 11a3 3 0 1 0 0-6"/><path d="M22 21c0-2.8-1.8-4.8-4.5-5.5"/></svg>
+        Equipe
+      </button>
+    </nav>
+
+    <div class="side-rodape">
+      OAB SP · 247ª Subseção<br>Assistência Judiciária
+    </div>
+  </aside>
+
+  <!-- CONTEÚDO -->
+  <div class="conteudo">
+    <header class="topo">
+      <div class="trilha">Gerenciamento / <b id="trilha-view">Visão geral</b></div>
+      <div class="data-hoje" id="data-hoje"></div>
+      <span id="status" class="status">Conectando…</span>
+    </header>
+
+    <div id="alerta" class="alerta" hidden></div>
+
+    <main>
+
+      <!-- VISÃO GERAL -->
+      <section id="v-visao" class="view ativa">
+        <h1 class="titulo">Visão geral</h1>
+        <p class="subtitulo" id="sub-visao">Resumo do mês atual.</p>
+
+        <div class="grid-4">
+          <div class="kpi azul">
+            <div class="kpi-topo">
+              <div class="kpi-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div>
+            </div>
+            <b id="k-dias">0</b><span>Dias registrados</span>
+          </div>
+          <div class="kpi verde">
+            <div class="kpi-topo">
+              <div class="kpi-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.5 3-6 7-6s7 2.5 7 6"/><path d="M16 11a3 3 0 1 0 0-6"/></svg></div>
+            </div>
+            <b id="k-atendidas">0</b><span>Pessoas atendidas</span>
+          </div>
+          <div class="kpi laranja">
+            <div class="kpi-topo">
+              <div class="kpi-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.5 3-6 7-6s7 2.5 7 6"/><path d="M16 11l2 2 4-4"/></svg></div>
+            </div>
+            <b id="k-nomeadas">0</b><span>Pessoas nomeadas</span>
+          </div>
+          <div class="kpi dourado">
+            <div class="kpi-topo">
+              <div class="kpi-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            </div>
+            <b id="k-orientacoes">0</b><span>Orientações</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h3 class="card-titulo" style="margin:0">Últimos registros</h3>
+            <button class="btn btn-primario" onclick="mostrarView('registrar')">+ Registrar dia</button>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Data</th><th class="num">Atendidas</th><th class="num">Nomeadas</th><th class="num">Orientações</th><th>Advogadas(os)</th></tr>
+            </thead>
+            <tbody id="lista-recentes"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- REGISTRAR DIA -->
+      <section id="v-registrar" class="view">
+        <h1 class="titulo">Registrar dia</h1>
+        <p class="subtitulo">Preencha os números, a equipe do dia e as advogadas(os) de plantão.</p>
+
+        <div class="card">
+          <div class="campo" style="max-width:280px">
+            <label for="data">Data do atendimento</label>
+            <input type="date" id="data">
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-titulo">Números do dia</h3>
+          <div class="numeros">
+            <div class="numero">
+              <label for="atendidas">Pessoas atendidas</label>
+              <input type="number" id="atendidas" min="0" placeholder="0">
+            </div>
+            <div class="numero">
+              <label for="nomeadas">Pessoas nomeadas</label>
+              <input type="number" id="nomeadas" min="0" placeholder="0">
+            </div>
+            <div class="numero">
+              <label for="orientacoes">Orientações</label>
+              <input type="number" id="orientacoes" min="0" placeholder="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-titulo">Advogadas(os) do dia</h3>
+          <div class="grid-2">
+            <div class="campo">
+              <label for="adv1">Advogada(o) 1</label>
+              <input id="adv1" list="dl-adv" placeholder="Digite ou escolha da lista">
+            </div>
+            <div class="campo">
+              <label for="adv2">Advogada(o) 2</label>
+              <input id="adv2" list="dl-adv" placeholder="Digite ou escolha da lista">
+            </div>
+          </div>
+          <datalist id="dl-adv"></datalist>
+        </div>
+
+        <div class="card">
+          <h3 class="card-titulo">Colaboradores do dia</h3>
+          <div class="campo">
+            <div class="adicionar">
+              <input id="in-colab" list="dl-colab" placeholder="Digite o nome e tecle Enter"
+                     onkeydown="if(event.key==='Enter'){event.preventDefault();addChip()}">
+              <button class="btn btn-sec" onclick="addChip()">Adicionar</button>
+            </div>
+            <div id="chips-colaboradores" class="chips"></div>
+            <datalist id="dl-colab"></datalist>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-titulo">Observações</h3>
+          <textarea id="obs" rows="4" placeholder="Ocorrências do dia (opcional)"></textarea>
+        </div>
+
+        <div class="acoes">
+          <button class="btn btn-primario" onclick="salvarDia()">Gravar dia</button>
+          <button class="btn btn-sec" onclick="limparFormulario()">Limpar formulário</button>
+        </div>
+
+        <div id="saida-dia" class="card" hidden style="margin-top:20px">
+          <h3 class="card-titulo">Resumo do dia gravado</h3>
+          <div id="texto-dia" class="saida"></div>
+          <div class="acoes">
+            <button class="btn btn-sec" onclick="copiar('texto-dia')">Copiar texto</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- HISTÓRICO -->
+      <section id="v-historico" class="view">
+        <h1 class="titulo">Histórico</h1>
+        <p class="subtitulo">Todos os dias registrados. Use o filtro para ver um mês.</p>
+
+        <div class="card">
+          <div class="linha" style="margin-bottom:20px">
+            <div class="campo">
+              <label for="filtro-mes">Filtrar por mês</label>
+              <input type="month" id="filtro-mes" onchange="renderHistorico()">
+            </div>
+            <button class="btn btn-sec" onclick="limparFiltro()">Mostrar todos</button>
+          </div>
+
+          <div class="totais" id="totais-historico"></div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th class="num">Atendidas</th>
+                <th class="num">Nomeadas</th>
+                <th class="num">Orientações</th>
+                <th>Advogadas(os)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="lista-historico"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- RELATÓRIOS -->
+      <section id="v-relatorios" class="view">
+        <h1 class="titulo">Relatórios</h1>
+        <p class="subtitulo">Escolha o mês, visualize a planilha e exporte em PDF.</p>
+
+        <div class="card">
+          <div class="linha">
+            <div class="campo">
+              <label for="mes-relatorio">Mês</label>
+              <input type="month" id="mes-relatorio">
+            </div>
+            <button class="btn btn-sec" onclick="gerarRelatorio(true)">Visualizar</button>
+            <button class="btn btn-dourado" onclick="exportarPDF()">Exportar PDF</button>
+          </div>
+        </div>
+
+        <div id="relatorio" class="relatorio"></div>
+      </section>
+
+      <!-- EQUIPE -->
+      <section id="v-equipe" class="view">
+        <h1 class="titulo">Equipe</h1>
+        <p class="subtitulo">Cadastre os nomes uma vez. Eles aparecem como sugestão nos registros.</p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3 class="card-titulo">Advogadas(os)</h3>
+            <div class="adicionar">
+              <input id="eq-adv" placeholder="Nome da advogada(o)"
+                     onkeydown="if(event.key==='Enter'){event.preventDefault();addEquipe('advogados')}">
+              <button class="btn btn-primario" onclick="addEquipe('advogados')">Adicionar</button>
+            </div>
+            <ul id="lista-advogados" class="lista"></ul>
+          </div>
+
+          <div class="card">
+            <h3 class="card-titulo">Colaboradores</h3>
+            <div class="adicionar">
+              <input id="eq-colab" placeholder="Nome do colaborador"
+                     onkeydown="if(event.key==='Enter'){event.preventDefault();addEquipe('colaboradores')}">
+              <button class="btn btn-primario" onclick="addEquipe('colaboradores')">Adicionar</button>
+            </div>
+            <ul id="lista-colaboradores" class="lista"></ul>
+          </div>
+        </div>
+      </section>
+
+    </main>
   </div>
-</header>
-
-<div id="alerta" class="alerta" hidden></div>
-
-<nav>
-  <div class="abas">
-    <button class="aba ativa" data-aba="registrar" onclick="abrirAba('registrar')">Registrar dia</button>
-    <button class="aba" data-aba="historico" onclick="abrirAba('historico')">Histórico</button>
-    <button class="aba" data-aba="relatorio" onclick="abrirAba('relatorio')">Relatório mensal</button>
-    <button class="aba" data-aba="equipe" onclick="abrirAba('equipe')">Equipe</button>
-  </div>
-</nav>
-
-<main>
-
-  <!-- REGISTRAR DIA -->
-  <section id="aba-registrar" class="painel ativo">
-    <h2 class="titulo-pagina">Registrar dia</h2>
-    <p class="sub-pagina">Preencha os números, a equipe do dia e as advogadas(os) de plantão.</p>
-
-    <div class="card">
-      <div class="campo" style="max-width:260px">
-        <label for="data">Data do atendimento</label>
-        <input type="date" id="data">
-      </div>
-    </div>
-
-    <div class="card">
-      <h3 class="card-titulo">Números do dia</h3>
-      <div class="numeros">
-        <div class="numero">
-          <label for="atendidas">Pessoas atendidas</label>
-          <input type="number" id="atendidas" min="0" placeholder="0">
-        </div>
-        <div class="numero">
-          <label for="nomeadas">Pessoas nomeadas</label>
-          <input type="number" id="nomeadas" min="0" placeholder="0">
-        </div>
-        <div class="numero">
-          <label for="orientacoes">Orientações</label>
-          <input type="number" id="orientacoes" min="0" placeholder="0">
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3 class="card-titulo">Advogadas(os) do dia</h3>
-      <div class="colunas">
-        <div class="campo">
-          <label for="adv1">Advogada(o) 1</label>
-          <input id="adv1" list="dl-adv" placeholder="Digite ou escolha da lista">
-        </div>
-        <div class="campo">
-          <label for="adv2">Advogada(o) 2</label>
-          <input id="adv2" list="dl-adv" placeholder="Digite ou escolha da lista">
-        </div>
-      </div>
-      <datalist id="dl-adv"></datalist>
-    </div>
-
-    <div class="card">
-      <h3 class="card-titulo">Colaboradores do dia</h3>
-      <div class="campo">
-        <div class="adicionar">
-          <input id="in-colab" list="dl-colab" placeholder="Digite o nome e tecle Enter"
-                 onkeydown="if(event.key==='Enter'){event.preventDefault();addChip('colaboradores')}">
-          <button class="btn btn-sec" onclick="addChip('colaboradores')">Adicionar</button>
-        </div>
-        <div id="chips-colaboradores" class="chips"></div>
-        <datalist id="dl-colab"></datalist>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3 class="card-titulo">Observações</h3>
-      <textarea id="obs" rows="4" placeholder="Ocorrências do dia (opcional)"></textarea>
-    </div>
-
-    <div class="acoes">
-      <button class="btn btn-primario" onclick="salvarDia()">Gravar dia</button>
-      <button class="btn btn-sec" onclick="limparFormulario()">Limpar formulário</button>
-    </div>
-
-    <div id="saida-dia" class="card" hidden style="margin-top:18px">
-      <div id="texto-dia" class="saida"></div>
-      <div class="acoes">
-        <button class="btn btn-sec" onclick="copiar('texto-dia')">Copiar texto</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- HISTÓRICO -->
-  <section id="aba-historico" class="painel">
-    <h2 class="titulo-pagina">Histórico</h2>
-    <p class="sub-pagina">Todos os dias registrados. Use o filtro para ver um mês.</p>
-
-    <div class="card">
-      <div class="filtro-linha">
-        <div class="campo">
-          <label for="filtro-mes">Filtrar por mês</label>
-          <input type="month" id="filtro-mes" onchange="renderHistorico()">
-        </div>
-        <button class="btn btn-sec" onclick="limparFiltro()">Mostrar todos</button>
-      </div>
-
-      <div class="totais" id="totais-historico"></div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th class="num">Atendidas</th>
-            <th class="num">Nomeadas</th>
-            <th class="num">Orientações</th>
-            <th>Advogadas(os)</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="lista-historico"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- RELATÓRIO MENSAL -->
-  <section id="aba-relatorio" class="painel">
-    <h2 class="titulo-pagina">Relatório mensal</h2>
-    <p class="sub-pagina">Escolha o mês, visualize a planilha e salve em PDF.</p>
-
-    <div class="card">
-      <div class="filtro-linha">
-        <div class="campo">
-          <label for="mes-relatorio">Mês</label>
-          <input type="month" id="mes-relatorio">
-        </div>
-        <button class="btn btn-sec" onclick="gerarRelatorio()">Visualizar</button>
-        <button class="btn btn-primario" onclick="salvarPDF()">Salvar em PDF</button>
-      </div>
-    </div>
-
-    <div id="relatorio" class="relatorio"></div>
-  </section>
-
-  <!-- EQUIPE -->
-  <section id="aba-equipe" class="painel">
-    <h2 class="titulo-pagina">Equipe</h2>
-    <p class="sub-pagina">Cadastre os nomes uma vez. Eles aparecem como sugestão nos registros.</p>
-
-    <div class="colunas">
-      <div class="card">
-        <h3 class="card-titulo">Colaboradores</h3>
-        <div class="adicionar">
-          <input id="eq-colab" placeholder="Nome do colaborador"
-                 onkeydown="if(event.key==='Enter'){event.preventDefault();addEquipe('colaboradores')}">
-          <button class="btn btn-primario" onclick="addEquipe('colaboradores')">Adicionar</button>
-        </div>
-        <ul id="lista-colaboradores" class="lista"></ul>
-      </div>
-
-      <div class="card">
-        <h3 class="card-titulo">Advogados(as)</h3>
-        <div class="adicionar">
-          <input id="eq-adv" placeholder="Nome do(a) advogado(a)"
-                 onkeydown="if(event.key==='Enter'){event.preventDefault();addEquipe('advogados')}">
-          <button class="btn btn-primario" onclick="addEquipe('advogados')">Adicionar</button>
-        </div>
-        <ul id="lista-advogados" class="lista"></ul>
-      </div>
-    </div>
-  </section>
-
-  <div class="rodape">
-    Este painel organiza os dados inseridos e gera relatórios.<br>
-    A responsabilidade pelas informações registradas é de quem utiliza o sistema.
-  </div>
-</main>
+</div>
 
 <div id="toast" class="toast"></div>
 
@@ -432,11 +505,15 @@
   const SENHA_ADM = "fran88"; // senha para excluir registros
   const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
                  'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const TITULOS = {
+    visao: 'Visão geral', registrar: 'Registrar dia', historico: 'Histórico',
+    relatorios: 'Relatórios', equipe: 'Equipe'
+  };
 
   // ===== Estado =====
   let registros = [];
   let equipe = { colaboradores: [], advogados: [] };
-  let chips = { colaboradores: [] };
+  let chipsColab = [];
   let editandoId = null;
   let ouvintesAtivos = false;
 
@@ -449,6 +526,10 @@
   const num = v => parseInt(v, 10) || 0;
   const hojeISO = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
                           .toISOString().slice(0, 10);
+  const nomeMesAno = mes => {
+    const [ano, m] = mes.split('-');
+    return `${MESES[parseInt(m, 10) - 1]} de ${ano}`;
+  };
 
   function toast(msg){
     const t = $('toast');
@@ -492,33 +573,67 @@
     };
   }
 
-  // ===== Abas =====
-  function abrirAba(nome){
-    document.querySelectorAll('.aba').forEach(b => b.classList.toggle('ativa', b.dataset.aba === nome));
-    document.querySelectorAll('.painel').forEach(p => p.classList.toggle('ativo', p.id === 'aba-' + nome));
-    if(nome === 'relatorio' && !$('mes-relatorio').value) $('mes-relatorio').value = hojeISO().slice(0, 7);
+  // ===== Navegação =====
+  function mostrarView(nome){
+    document.querySelectorAll('.menu button').forEach(b =>
+      b.classList.toggle('ativa', b.dataset.view === nome));
+    document.querySelectorAll('.view').forEach(v =>
+      v.classList.toggle('ativa', v.id === 'v-' + nome));
+    $('trilha-view').textContent = TITULOS[nome];
+    if(nome === 'relatorios' && !$('mes-relatorio').value)
+      $('mes-relatorio').value = hojeISO().slice(0, 7);
     if(nome === 'historico') renderHistorico();
+    if(nome === 'visao') renderVisao();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ===== Colaboradores (chips) =====
-  function addChip(tipo){
+  // ===== Visão geral =====
+  function renderVisao(){
+    const mes = hojeISO().slice(0, 7);
+    $('sub-visao').textContent = `Resumo de ${nomeMesAno(mes)}.`;
+
+    const doMes = registros.filter(r => mesDe(r) === mes);
+    const soma = k => doMes.reduce((acc, r) => acc + (r[k] || 0), 0);
+    $('k-dias').textContent = doMes.length;
+    $('k-atendidas').textContent = soma('atendidas');
+    $('k-nomeadas').textContent = soma('nomeadas');
+    $('k-orientacoes').textContent = soma('orientacoes');
+
+    const recentes = [...registros]
+      .sort((a, b) => b.data_original.localeCompare(a.data_original))
+      .slice(0, 5);
+
+    $('lista-recentes').innerHTML = recentes.length
+      ? recentes.map(r => `
+          <tr>
+            <td><b>${esc(r.data)}</b></td>
+            <td class="num">${r.atendidas}</td>
+            <td class="num">${r.nomeadas}</td>
+            <td class="num">${r.orientacoes}</td>
+            <td>${esc(r.advogados.join(' / ')) || '—'}</td>
+          </tr>`).join('')
+      : '<tr><td colspan="5" class="vazio-msg">Nenhum registro ainda. Clique em "Registrar dia".</td></tr>';
+  }
+
+  // ===== Colaboradores do dia (chips) =====
+  function addChip(){
     const input = $('in-colab');
     const nome = input.value.trim();
     if(!nome) return;
-    if(!chips[tipo].includes(nome)) chips[tipo].push(nome);
+    if(!chipsColab.includes(nome)) chipsColab.push(nome);
     input.value = '';
-    renderChips(tipo);
+    renderChips();
     input.focus();
   }
 
-  function removeChip(tipo, i){
-    chips[tipo].splice(i, 1);
-    renderChips(tipo);
+  function removeChip(i){
+    chipsColab.splice(i, 1);
+    renderChips();
   }
 
-  function renderChips(tipo){
-    $('chips-' + tipo).innerHTML = chips[tipo].map((n, i) =>
-      `<span class="chip">${esc(n)}<button type="button" onclick="removeChip('${tipo}', ${i})" title="Remover">×</button></span>`
+  function renderChips(){
+    $('chips-colaboradores').innerHTML = chipsColab.map((n, i) =>
+      `<span class="chip">${esc(n)}<button type="button" onclick="removeChip(${i})" title="Remover">×</button></span>`
     ).join('');
   }
 
@@ -573,7 +688,7 @@
       nomeadas: num($('nomeadas').value),
       orientacoes: num($('orientacoes').value),
       total: atendidas, // compatibilidade com registros antigos
-      colaboradores: [...chips.colaboradores],
+      colaboradores: [...chipsColab],
       advogados,
       obs: $('obs').value.trim()
     };
@@ -606,8 +721,8 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
 
   function limparFormulario(){
     ['atendidas','nomeadas','orientacoes','obs','in-colab','adv1','adv2'].forEach(id => $(id).value = '');
-    chips = { colaboradores: [] };
-    renderChips('colaboradores');
+    chipsColab = [];
+    renderChips();
     $('data').value = hojeISO();
     $('saida-dia').hidden = true;
     editandoId = null;
@@ -627,6 +742,7 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
 
     const soma = k => lista.reduce((acc, r) => acc + (r[k] || 0), 0);
     $('totais-historico').innerHTML = `
+      <div class="total"><b>${lista.length}</b><span>Dias</span></div>
       <div class="total"><b>${soma('atendidas')}</b><span>Atendidas</span></div>
       <div class="total"><b>${soma('nomeadas')}</b><span>Nomeadas</span></div>
       <div class="total"><b>${soma('orientacoes')}</b><span>Orientações</span></div>`;
@@ -639,7 +755,7 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
             <td class="num">${r.nomeadas}</td>
             <td class="num">${r.orientacoes}</td>
             <td>${esc(r.advogados.join(' / ')) || '—'}</td>
-            <td style="text-align:right;white-space:nowrap">
+            <td class="acoes-td">
               <button class="btn btn-sec btn-mini" onclick="recuperar(${r.id})">Ver / Editar</button>
               <button class="btn btn-perigo" onclick="excluir(${r.id})">Excluir</button>
             </td>
@@ -659,9 +775,9 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
     $('obs').value = r.obs;
     $('adv1').value = r.advogados[0] || '';
     $('adv2').value = r.advogados[1] || '';
-    chips = { colaboradores: [...r.colaboradores] };
-    renderChips('colaboradores');
-    abrirAba('registrar');
+    chipsColab = [...r.colaboradores];
+    renderChips();
+    mostrarView('registrar');
     mostrarDia(r);
   }
 
@@ -675,21 +791,22 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
     }
   }
 
-  // ===== Relatório mensal (planilha) =====
-  function gerarRelatorio(){
+  // ===== Relatório (planilha) =====
+  function gerarRelatorio(mostrarAviso){
     const mes = $('mes-relatorio').value;
-    if(!mes) return toast('Escolha o mês do relatório.');
+    if(!mes){ toast('Escolha o mês do relatório.'); return false; }
 
     const lista = registros
       .filter(r => mesDe(r) === mes)
       .sort((a, b) => a.data_original.localeCompare(b.data_original));
+
     if(!lista.length){
       $('relatorio').classList.remove('ativo');
-      return toast('Nenhum registro para este mês.');
+      toast('Nenhum registro para este mês.');
+      return false;
     }
 
     const [ano, m] = mes.split('-');
-    const nomeMes = MESES[parseInt(m, 10) - 1];
     const soma = k => lista.reduce((acc, r) => acc + (r[k] || 0), 0);
     const hoje = brData(hojeISO());
 
@@ -707,13 +824,18 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
 
     $('relatorio').innerHTML = `
       <div class="rel-topo">
-        <div class="selo">OAB</div>
+        <div class="selo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v17"/><path d="M8 20h8"/><path d="M5 7h14"/>
+            <path d="M5 7l-2.5 6h5L5 7z"/><path d="M19 7l-2.5 6h5L19 7z"/>
+          </svg>
+        </div>
         <div>
           <h1>Relatório mensal de atendimentos</h1>
           <p>OAB SP · 247ª Subseção Santana de Parnaíba · Assistência Judiciária</p>
         </div>
         <div class="rel-mes">
-          <b>${nomeMes} de ${ano}</b>
+          <b>${nomeMesAno(mes)}</b>
           <span>Emitido em ${hoje}</span>
         </div>
       </div>
@@ -751,18 +873,22 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
       </table>
 
       <div class="rel-rodape">
-        <span>Documento gerado pelo Painel de Atendimento.</span>
+        <span>Documento gerado pelo painel de atendimento.</span>
         <div class="rel-assinatura">Responsável pelo registro</div>
       </div>`;
 
     $('relatorio').classList.add('ativo');
-    $('relatorio').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return true;
   }
 
-  function salvarPDF(){
+  function visualizarRelatorio(){
+    if(gerarRelatorio(true))
+      $('relatorio').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function exportarPDF(){
     if(!$('relatorio').classList.contains('ativo')){
-      gerarRelatorio();
-      if(!$('relatorio').classList.contains('ativo')) return;
+      if(!gerarRelatorio(true)) return;
     }
     setTimeout(() => window.print(), 150);
   }
@@ -792,6 +918,7 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
     db.ref('relatorios').on('value', snap => {
       const dados = snap.val() || {};
       registros = Object.values(dados).map(normaliza);
+      renderVisao();
       renderHistorico();
     }, erroDb);
 
@@ -824,7 +951,11 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
 
   // ===== Início =====
   $('data').value = hojeISO();
-  renderChips('colaboradores');
+  $('mes-relatorio').value = hojeISO().slice(0, 7);
+  $('data-hoje').textContent = new Date().toLocaleDateString('pt-BR',
+    { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  renderChips();
+  renderVisao();
 </script>
 </body>
 </html>
