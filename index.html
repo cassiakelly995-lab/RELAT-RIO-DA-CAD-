@@ -263,7 +263,7 @@
       <!-- VISÃO GERAL -->
       <section id="v-visao" class="view ativa">
         <h1 class="titulo">Visão geral</h1>
-        <p class="subtitulo" id="sub-visao">Resumo do mês atual.</p>
+        <p class="subtitulo" id="sub-visao">Resumo do ano atual.</p>
 
         <div class="grid-4">
           <div class="kpi azul">
@@ -386,7 +386,7 @@
       <!-- HISTÓRICO -->
       <section id="v-historico" class="view">
         <h1 class="titulo">Histórico</h1>
-        <p class="subtitulo">Todos os dias registrados. Use o filtro para ver um mês.</p>
+        <p class="subtitulo">Totais do ano atual. Escolha um mês no filtro para ver só aquele mês.</p>
 
         <div class="card">
           <div class="linha" style="margin-bottom:20px">
@@ -394,7 +394,7 @@
               <label for="filtro-mes">Filtrar por mês</label>
               <input type="month" id="filtro-mes" onchange="renderHistorico()">
             </div>
-            <button class="btn btn-sec" onclick="limparFiltro()">Mostrar todos</button>
+            <button class="btn btn-sec" onclick="limparFiltro()">Voltar ao ano atual</button>
           </div>
 
           <div class="totais" id="totais-historico"></div>
@@ -504,9 +504,11 @@
     ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const brData = iso => iso ? iso.split('-').reverse().join('/') : '';
   const mesDe = r => (r.data_original || '').slice(0, 7);
+  const anoDe = r => (r.data_original || '').slice(0, 4);
   const num = v => parseInt(v, 10) || 0;
   const hojeISO = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
                           .toISOString().slice(0, 10);
+  const anoAtual = () => hojeISO().slice(0, 4);
   const nomeMesAno = mes => {
     const [ano, m] = mes.split('-');
     return `${MESES[parseInt(m, 10) - 1]} de ${ano}`;
@@ -568,14 +570,14 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ===== Visão geral =====
+  // ===== Visão geral (totais do ano atual) =====
   function renderVisao(){
-    const mes = hojeISO().slice(0, 7);
-    $('sub-visao').textContent = `Resumo de ${nomeMesAno(mes)}.`;
+    const ano = anoAtual();
+    $('sub-visao').textContent = `Resumo de ${ano}.`;
 
-    const doMes = registros.filter(r => mesDe(r) === mes);
-    const soma = k => doMes.reduce((acc, r) => acc + (r[k] || 0), 0);
-    $('k-dias').textContent = doMes.length;
+    const doAno = registros.filter(r => anoDe(r) === ano);
+    const soma = k => doAno.reduce((acc, r) => acc + (r[k] || 0), 0);
+    $('k-dias').textContent = doAno.length;
     $('k-atendidas').textContent = soma('atendidas');
     $('k-nomeadas').textContent = soma('nomeadas');
     $('k-orientacoes').textContent = soma('orientacoes');
@@ -709,7 +711,7 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
     editandoId = null;
   }
 
-  // ===== Histórico =====
+  // ===== Histórico (totais do ano atual ou do mês escolhido) =====
   function limparFiltro(){
     $('filtro-mes').value = '';
     renderHistorico();
@@ -717,13 +719,21 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
 
   function renderHistorico(){
     const mes = $('filtro-mes').value;
+    const ano = anoAtual();
+
+    // Totais: mês escolhido, ou ano atual se nenhum mês for escolhido
+    const base = mes
+      ? registros.filter(r => mesDe(r) === mes)
+      : registros.filter(r => anoDe(r) === ano);
+
+    // Lista: todos os registros (ou só o mês escolhido)
     const lista = registros
       .filter(r => !mes || mesDe(r) === mes)
       .sort((a, b) => b.data_original.localeCompare(a.data_original));
 
-    const soma = k => lista.reduce((acc, r) => acc + (r[k] || 0), 0);
+    const soma = k => base.reduce((acc, r) => acc + (r[k] || 0), 0);
     $('totais-historico').innerHTML = `
-      <div class="total"><b>${lista.length}</b><span>Dias</span></div>
+      <div class="total"><b>${base.length}</b><span>Dias</span></div>
       <div class="total"><b>${soma('atendidas')}</b><span>Atendidas</span></div>
       <div class="total"><b>${soma('nomeadas')}</b><span>Nomeadas</span></div>
       <div class="total"><b>${soma('orientacoes')}</b><span>Orientações</span></div>`;
