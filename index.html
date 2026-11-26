@@ -81,11 +81,11 @@
   .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
   .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
 
-  .kpi{background:var(--branco);border:1px solid var(--borda);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px}
+  .kpi{background:var(--branco);border:1px solid var(--borda);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
   .kpi-topo{display:flex;align-items:center;justify-content:space-between}
   .kpi-icone{width:38px;height:38px;border-radius:10px;display:grid;place-items:center}
   .kpi-icone svg{width:20px;height:20px}
-  .kpi b{font-size:34px;font-weight:700;color:var(--texto);line-height:1}
+  .kpi b{font-size:34px;font-weight:700;color:var(--texto);line-height:1;overflow-wrap:anywhere}
   .kpi span{font-size:13px;color:var(--texto-2);font-weight:600}
   .kpi.azul .kpi-icone{background:var(--azul-claro);color:var(--azul)}
   .kpi.verde .kpi-icone{background:#e7f6ec;color:var(--verde)}
@@ -538,6 +538,12 @@
     mostrarAlerta(`<b>Não foi possível concluir a operação.</b> Verifique a internet e as regras do Firebase. Detalhe: ${esc(err.message || err.code)}`);
   }
 
+  // Converte qualquer valor (número, texto ou vazio) em número inteiro
+  const toInt = v => {
+    const n = parseInt(String(v ?? '').replace(/\D/g, ''), 10);
+    return isNaN(n) ? 0 : n;
+  };
+
   // Aceita registros antigos (com "total" e "drs") e novos
   function normaliza(r){
     const advs = Array.isArray(r.advogados)
@@ -547,9 +553,9 @@
       id: r.id,
       data_original: r.data_original || '',
       data: r.data || brData(r.data_original),
-      atendidas: r.atendidas ?? r.total ?? 0,
-      nomeadas: r.nomeadas ?? 0,
-      orientacoes: r.orientacoes ?? 0,
+      atendidas: toInt(r.atendidas ?? r.total),
+      nomeadas: toInt(r.nomeadas),
+      orientacoes: toInt(r.orientacoes),
       colaboradores: r.colaboradores || [],
       advogados: advs.filter(Boolean).slice(0, 2),
       obs: r.obs || ''
@@ -576,7 +582,7 @@
     $('sub-visao').textContent = `Resumo de ${ano}.`;
 
     const doAno = registros.filter(r => anoDe(r) === ano);
-    const soma = k => doAno.reduce((acc, r) => acc + (r[k] || 0), 0);
+    const soma = k => doAno.reduce((acc, r) => acc + toInt(r[k]), 0);
     $('k-dias').textContent = doAno.length;
     $('k-atendidas').textContent = soma('atendidas');
     $('k-nomeadas').textContent = soma('nomeadas');
@@ -731,7 +737,7 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
       .filter(r => !mes || mesDe(r) === mes)
       .sort((a, b) => b.data_original.localeCompare(a.data_original));
 
-    const soma = k => base.reduce((acc, r) => acc + (r[k] || 0), 0);
+    const soma = k => base.reduce((acc, r) => acc + toInt(r[k]), 0);
     $('totais-historico').innerHTML = `
       <div class="total"><b>${base.length}</b><span>Dias</span></div>
       <div class="total"><b>${soma('atendidas')}</b><span>Atendidas</span></div>
@@ -797,7 +803,7 @@ Observações: ${r.obs || 'Nenhuma ocorrência registrada.'}`;
       return false;
     }
 
-    const soma = k => lista.reduce((acc, r) => acc + (r[k] || 0), 0);
+    const soma = k => lista.reduce((acc, r) => acc + toInt(r[k]), 0);
     const hoje = brData(hojeISO());
 
     const linhas = lista.map(r => `
